@@ -1,0 +1,6 @@
+[submodule "submodules/dockerfiles"]
+	path = submodules/jessfraz-dockerfiles
+	url = https://github.com/jessfraz/dockerfiles.git
+[submodule "submodules/docker-stacks"]
+	path = submodules/jupyter-docker-stacks
+	url = https://github.com/jupyter/docker-stacks.git
