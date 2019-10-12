@@ -4,3 +4,6 @@
 [submodule "submodules/docker-stacks"]
 	path = submodules/jupyter-docker-stacks
 	url = https://github.com/jupyter/docker-stacks.git
+[submodule "submodules/x11docker"]
+	path = submodules/x11docker
+	url = https://github.com/mviereck/x11docker.git
