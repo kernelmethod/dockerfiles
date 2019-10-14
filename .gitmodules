@@ -7,3 +7,6 @@
 [submodule "submodules/x11docker"]
 	path = submodules/x11docker
 	url = https://github.com/mviereck/x11docker.git
+[submodule "submodules/docker-headless-vnc-container"]
+	path = submodules/docker-headless-vnc-container
+	url = https://github.com/ConSol/docker-headless-vnc-container.git
