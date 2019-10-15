@@ -36,9 +36,6 @@ RUN cd /tmp && \
         | sha256sum -c - \
     && unzip /tmp/ghidra.zip \
     && mv ghidra_$(echo $GHIDRA_VERSION | cut -d '_' -f1)/* ${GHIDRA_DIR} \
-    # Move the icon that we're going to use for the desktop shortcut
-    # into ${GHIDRA_DIR}
-    && mv ${GHIDRA_DIR}/docs/images/GHIDRA_1.png ${GHIDRA_DIR}/ghidra.png \
     && rm -rf \
         ${GHIDRA_DIR}/docs \
         ${GHIDRA_DIR}/license \
@@ -52,6 +49,7 @@ RUN cd /tmp && \
         | xargs -0 rm
 
 COPY server.conf ${GHIDRA_DIR}/server/server.conf
+COPY ghidra.png ${GHIDRA_DIR}/ghidra.png
 
 # Add Ghidra to PATH, and add entrypoint
 USER root
