@@ -74,4 +74,5 @@ RUN chown ${GHIDRA_USER}:${GHIDRA_USER} /run.sh \
     && chmod 500 /run.sh
 
 USER ghidra
+VOLUME /projects
 CMD [ "/run.sh" ]
