@@ -12,18 +12,19 @@ RUN apt-get update \
         wget \
         unzip \
         ca-certificates \
-        default-jre \
+        default-jdk \
     && apt-get clean
 
 # Create non-root user to run Ghidra
 RUN useradd \
         --home-dir ${GHIDRA_HOME} \
-        --create-home \
+        --no-create-home \
         --shell /bin/bash \
         --password "0" \
         --groups ${VNC_GROUP} \
-        --skel /dev/null \
-        ${GHIDRA_USER}
+        ${GHIDRA_USER} \
+    && mkdir ${GHIDRA_HOME} \
+    && chown -R ${GHIDRA_USER}:${GHIDRA_USER} ${GHIDRA_HOME}
 
 # Install Ghidra
 USER ${GHIDRA_USER}
