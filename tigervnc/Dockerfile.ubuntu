@@ -6,6 +6,7 @@ RUN apt-get update \
             tigervnc-standalone-server \
             tigervnc-xorg-extension \
             tigervnc-viewer \
+            openssl \
             sudo \
     && apt-get clean
 

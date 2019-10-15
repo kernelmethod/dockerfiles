@@ -4,7 +4,7 @@
 ### Simple bash script to create a new user for the VNC
 ###
 
-if [ $# = 0 ] || [ $# > 2 ]
+if [[ $# < 1 ]] || [[ $# > 2 ]]
 then
     cat <<- EOT
 add-vnc-user username [vnc-password]
@@ -19,7 +19,7 @@ fi
 export VNC_USER=$1
 export VNC_USER_HOME=$(eval echo ~$VNC_USER)
 
-sudo -u ${VNC_USER} <<- EOT
+sudo -u ${VNC_USER} bash <<- EOT
 echo "Configuring VNC for ${VNC_USER}..."
 
 mkdir ${VNC_USER_HOME}/.vnc
