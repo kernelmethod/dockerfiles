@@ -36,8 +36,19 @@ RUN \
 # Port 9999: autopsy
 EXPOSE 9999
 
-# Add welcome message to the .bashrc 
-COPY .bashrc /root
+# VNC configuration
+ARG VNC_PASS=password
+RUN mkdir ${HOME}/.vnc \
+    && bash -c "vncpasswd -f <<< '${VNC_PASS}' > ${HOME}/.vnc/passwd" \
+    && openssl req \
+        -x509 \
+        -newkey rsa:4096 \
+        -keyout ${HOME}/.vnc/vnc.key \
+        -out ${HOME}/.vnc/vnc.cert \
+        -days 365 \
+        -subj '/CN=forensics' \
+        -nodes
 
 VOLUME /persistent
-CMD [ "bash" ]
+COPY run.sh /run.sh
+CMD [ "/run.sh" ]
