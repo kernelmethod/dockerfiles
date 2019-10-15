@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  tigervnc-ubuntu:
+    build:
+      context: .
+      dockerfile: Dockerfile.ubuntu
+    image: wshand/tigervnc:ubuntu
+  tigervnc-debian:
+    build:
+      context: .
+      dockerfile: Dockerfile.debian
+    image: wshand/tigervnc:debian
