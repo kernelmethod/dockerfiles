@@ -1,0 +1,22 @@
+wshand/tigervnc
+TigerVNC server for accessing desktops run in Docker containers.
+----------------------------------------------------------------
+To configure VNC for $user, you can execute the following commands
+(either in your Dockerfile or when you run the container):
+
+    # Alternatively, run
+    #
+    #   mkdir -p ${HOME}/.vnc \
+    #   && bash -c "vncpasswd -f <<< $vnc_password > ${HOME}/.vnc/passwd
+    #
+    # if you don't want to have to type the password in from stdin.
+    vncpasswd
+
+    # You could also COPY a key and certificate from a local file
+    openssl req -x509 -newkey rsa:4096 -keyout ${HOME}/.vnc/vnc.key \
+        -out ${HOME}/.vnc/vnc.cert -days 365 -subj '/CN=${USER}' -nodes
+
+A convenience script that automates this process has also been added to
+this container. You can run it with
+
+    add-vnc-user username [vnc-password]

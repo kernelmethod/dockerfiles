@@ -6,4 +6,17 @@ RUN apt-get update \
             tigervnc-standalone-server \
             tigervnc-xorg-extension \
             tigervnc-viewer \
+            sudo \
     && apt-get clean
+
+# Add convenience scripts, and a message to display when the container is run
+RUN mkdir /etc/vnc
+COPY add-vnc-user.sh /etc/vnc/
+COPY msg /etc/vnc/
+RUN chmod -R a-w /etc/vnc/ \
+    && ln -s /etc/vnc/add-vnc-user.sh /usr/bin/add-vnc-user
+
+# Expose VNC ports
+EXPOSE 5900-6000
+
+CMD cat /etc/vnc/msg
