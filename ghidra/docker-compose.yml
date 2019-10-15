@@ -4,6 +4,9 @@ services:
   ghidra:
     build:
       context: .
+      args:
+        GHIDRA_VERSION: 9.0.4_PUBLIC_20190516
+        GHIDRA_SHA: a50d0cd475d9377332811eeae66e94bdc9e7d88e58477c527e9c6b78caec18bf
     image: wshand/ghidra
     volumes:
       - "ghidra-projects:/projects"
