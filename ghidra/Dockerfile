@@ -12,7 +12,7 @@ RUN apt-get update \
         wget \
         unzip \
         ca-certificates \
-        default-jdk \
+        default-jre \
     && apt-get clean
 
 # Create non-root user to run Ghidra
