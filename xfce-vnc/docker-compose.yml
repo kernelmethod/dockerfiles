@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  xfce-vnc-ubuntu:
+    build:
+      context: .
+      dockerfile: Dockerfile.ubuntu
+    image: wshand/xfce-vnc:ubuntu
+  xfce-vnc-debian:
+    build:
+      context: .
+      dockerfile: Dockerfile.debian
+    image: wshand/xfce-vnc:debian

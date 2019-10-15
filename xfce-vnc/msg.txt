@@ -1,0 +1,41 @@
+wshand/xfce-vnc
+Ubuntu container for running Xfce sessions over TigerVNC.
+-----------------------------------------------------------------
+To use this container, create a Dockerfile that starts with
+
+    FROM wshand/ubuntu-xfce-vnc:latest
+
+Now to configure VNC for $user, first run
+
+    mkdir -p ${HOME}/.vnc
+
+to create the .vnc directory for $user. Then, create some self-signed
+TLS certificates so that you encrypt session traffic. For instance,
+you could run
+
+    openssl req \
+        -x509 \
+        -newkey rsa:4096 \
+        -keyout ${HOME}/.vnc/vnc.key \
+        -out ${HOME}/.vnc/vnc.cert \
+        -days 365 \
+        -subj '/CN=localhost' \
+        -nodes
+
+If you're okay with hard-coding your credentials for your VNC sessions,
+you can add
+
+    bash -c "vncpasswd -f <<< '$password' > ${HOME}/.vnc/passwd"
+
+to your Dockerfile. You can start a VNC session at runtime with something
+along the lines of
+
+    vncserver \
+        -geometry 800x800 \
+        -PasswordFile ${HOME}/.vnc/passwd \
+        -xstartup /etc/vnc/xstartup \
+        -localhost no \
+        -X509Key ${HOME}/.vnc/vnc.key \
+        -X509Cert ${HOME}/.vnc/vnc.cert
+
+See `vncserver --help` for an explanation of all of the available options.
