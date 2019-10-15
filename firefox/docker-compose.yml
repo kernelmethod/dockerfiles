@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  firefox:
+    build:
+      context: .
+    image: wshand/firefox
