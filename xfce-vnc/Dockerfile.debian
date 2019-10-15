@@ -1,13 +1,9 @@
-FROM debian:buster-slim
+FROM wshand/tigervnc:debian
 
 RUN apt-get update \
-    && DEBIAN_FRONTEND=noninteractive \
-        apt-get install -y \
+    && apt-get install -y \
             xfce4 \
             xfce4-goodies \
-            tigervnc-standalone-server \
-            tigervnc-xorg-extension \
-            tigervnc-viewer \
             sudo \
     && apt-get clean
 
@@ -16,7 +12,7 @@ ENV TERM=xterm-256color
 
 RUN mkdir /etc/vnc
 COPY xstartup /etc/vnc/
-COPY msg.txt /etc/vnc/
+COPY msg /etc/vnc/
 
 # Add the VNC_GROUP group, which is the only group of users that is permitted
 # to run vncserver. We give this group special sudo permissions that let them
@@ -29,9 +25,8 @@ RUN groupadd ${VNC_GROUP} \
             "chown root:${VNC_GROUP} {}; \
             chmod 750 {};" \
     && echo "%${VNC_GROUP} ALL = NOPASSWD: $(which startxfce4)" \
-        >> /etc/sudoers
+        >> /etc/sudoers \
+    # Add a line to the add-vnc-user script that adds the user to VNC_GROUP
+    && echo -e "usermod -aG ${VNC_GROUP} \$1" >> /etc/vnc/add-vnc-user.sh
 
-# Expose ports for VNC
-EXPOSE 5900-6000
-
-CMD cat /etc/vnc/msg.txt
+CMD cat /etc/vnc/msg
