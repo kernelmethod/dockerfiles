@@ -8,6 +8,7 @@ RUN apt-get update \
             tigervnc-standalone-server \
             tigervnc-xorg-extension \
             tigervnc-viewer \
+            sudo \
     && apt-get clean
 
 # Configure VNC
@@ -17,8 +18,18 @@ RUN mkdir /etc/vnc
 COPY xstartup /etc/vnc/
 COPY msg.txt /etc/vnc/
 
-# Restrict permissions in /etc/vnc
-RUN chmod a-w /etc/vnc/*
+# Add the VNC_GROUP group, which is the only group of users that is permitted
+# to run vncserver. We give this group special sudo permissions that let them
+# start the desktop.
+ENV VNC_GROUP=vnc
+RUN groupadd ${VNC_GROUP} \
+    && chmod -R a-w /etc/vnc \
+    && find /usr/bin -type f -executable -iname "*vnc*" \
+        | xargs -I {} sh -c \
+            "chown root:${VNC_GROUP} {}; \
+            chmod 750 {};" \
+    && echo "%${VNC_GROUP} ALL = NOPASSWD: $(which startxfce4)" \
+        >> /etc/sudoers
 
 # Expose ports for VNC
 EXPOSE 5900-6000
