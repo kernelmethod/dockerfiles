@@ -1,0 +1,12 @@
+version: '3.4'
+
+services:
+  forensics:
+    build:
+      context: .
+    image: wshand/forensics
+    volumes:
+      - "forensics:/persistent"
+
+volumes:
+  forensics:
