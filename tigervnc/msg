@@ -20,3 +20,4 @@ A convenience script that automates this process has also been added to
 this container. You can run it with
 
     add-vnc-user username [vnc-password]
+
