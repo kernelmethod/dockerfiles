@@ -64,7 +64,6 @@ RUN apt-get update \
         cmake \
         git \
         libfontconfig1-dev \
-        libfribidi-dev \
         libgdk-pixbuf2.0-dev \
         libtool \
         libsm-dev \
@@ -86,7 +85,8 @@ RUN apt-get update \
     && apt-get clean \
     && apt-get autoremove -y
 
-RUN apt-get install -y xfce4-terminal
+RUN apt-get install -y xfce4-terminal \
+    && apt-get install -y --no-install-recommends xfe
 
 ADD vnc-config/ /etc/vnc/
 ADD icewm-config/ /usr/share/icewm/

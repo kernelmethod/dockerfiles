@@ -4,3 +4,4 @@
 # modifications to this file will be overwritten when you reinstall icewm.
 #
 prog "xfce4-terminal" utilities-terminal xfce4-terminal
+prog "xfe file manager" folder_32x32.xpm xfe
