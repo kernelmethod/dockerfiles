@@ -1,0 +1,35 @@
+wshand/icewm-vnc
+TigerVNC server for accessing an IceWM desktop run in a Docker container.
+----------------------------------------------------------------
+To configure VNC for $user, you can execute the following commands
+(either in your Dockerfile or when you run the container):
+
+    # Alternatively, run
+    #
+    #   mkdir -p ${HOME}/.vnc \
+    #   && bash -c "vncpasswd -f <<< $vnc_password > ${HOME}/.vnc/passwd
+    #
+    # if you don't want to have to type the password in from stdin.
+    vncpasswd
+
+    # You could also COPY a key and certificate from a local file
+    openssl req -x509 -newkey rsa:4096 -keyout ${HOME}/.vnc/vnc.key \
+        -out ${HOME}/.vnc/vnc.cert -days 365 -subj '/CN=${USER}' -nodes
+
+A convenience script that automates this process has also been added to
+this container. You can run it with
+
+    add-vnc-user username [vnc-password]
+
+To start a VNC server, you can run a command along the lines of the following:
+
+    vncserver \
+        # Make display 1200px wide, 800px tall
+        -geometry 1200x800 \
+        -localhost no \
+        -X509Key ${HOME}/.vnc/vnc.key \
+        -X509Cert ${HOME}/.vnc/vnc.cert \
+        -xstartup /etc/vnc/xstartup
+
+The most important component of this is to set -xstartup to /etc/vnc/xstartup,
+unless you know what you're doing. You can run vncserver -h to see more options.
