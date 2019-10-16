@@ -1,6 +1,10 @@
-FROM wshand/xfce-vnc:ubuntu
+FROM wshand/icewm-vnc:debian
 
 RUN apt-get update \
+    # Create directory to fix bug we would get otherwise
+    # from installing default-jdk. Reference:
+    #   https://github.com/debuerreotype/docker-debian-artifacts/issues/24
+    && mkdir -p /usr/share/man/man1 \
     && apt-get install -y \
         --no-install-recommends \
         wget \
@@ -18,7 +22,6 @@ RUN useradd \
         --create-home \
         --shell /bin/bash \
         --password "0" \
-        --groups ${VNC_GROUP} \
         ${GHIDRA_USER} \
     && mkdir ${GHIDRA_DIR} \
     && chown -R ${GHIDRA_USER}:${GHIDRA_USER} ${GHIDRA_DIR}
@@ -49,7 +52,6 @@ RUN cd /tmp && \
         | xargs -0 rm
 
 COPY server.conf ${GHIDRA_DIR}/server/server.conf
-COPY ghidra.png ${GHIDRA_DIR}/ghidra.png
 
 # Add Ghidra to PATH, and add entrypoint
 USER root
@@ -59,29 +61,22 @@ RUN ln -s ${GHIDRA_DIR}/ghidraRun /usr/bin/ghidra \
     && chmod 500 /run.sh
 
 # Add desktop application for Ghidra
-RUN mkdir ${HOME}/Desktop
-COPY Ghidra.desktop /home/${GHIDRA_USER}/Desktop/Ghidra.desktop
-RUN chmod 700 /home/${GHIDRA_USER}/Desktop/Ghidra.desktop \
-    && echo "Icon=${GHIDRA_DIR}/ghidra.png" \
-        >> /home/${GHIDRA_USER}/Desktop/Ghidra.desktop \
-    && chown -R ${GHIDRA_USER}:${GHIDRA_USER} /home/${GHIDRA_USER}
+#RUN mkdir ${HOME}/Desktop
+#COPY Ghidra.desktop /home/${GHIDRA_USER}/Desktop/Ghidra.desktop
+#RUN chmod 700 /home/${GHIDRA_USER}/Desktop/Ghidra.desktop \
+#    && echo "Icon=${GHIDRA_DIR}/ghidra.png" \
+#        >> /home/${GHIDRA_USER}/Desktop/Ghidra.desktop \
+#    && chown -R ${GHIDRA_USER}:${GHIDRA_USER} /home/${GHIDRA_USER}
+
+COPY ghidra.png /usr/share/icewm/icons
+ADD icewm-config/ /usr/share/icewm/
 
 # Add VNC configuration for GHIDRA_USER
-USER ${GHIDRA_USER}
 ARG VNC_PASS="password"
-RUN mkdir ${HOME}/.vnc \
-    && openssl req \
-        -x509 \
-        -newkey rsa:4096 \
-        -keyout ${HOME}/.vnc/vnc.key \
-        -out ${HOME}/.vnc/vnc.cert \
-        -days 365 \
-        -subj '/CN=ghidra' \
-        -nodes \
-    && bash -c "vncpasswd -f <<< '${VNC_PASS}' > ${HOME}/.vnc/passwd" \
-    && chmod 700 ${HOME}/.vnc \
-    && chmod 400 ${HOME}/.vnc/*
+RUN add-vnc-user ${GHIDRA_USER} ${VNC_PASS} \
+    && add-vnc-user root ${VNC_PASS}
 
+#USER ${GHIDRA_USER}
 WORKDIR /home/${GHIDRA_USER}
 EXPOSE 13100 13101 13102
 
