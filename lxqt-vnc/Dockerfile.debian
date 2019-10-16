@@ -1,0 +1,17 @@
+FROM wshand/tigervnc:debian
+
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive \
+        apt-get install -y \
+            lxqt-core \
+            dbus-x11 \
+            xfwm4 \
+    && apt-get clean
+
+ENV TERM=xterm-256color
+
+COPY xstartup /etc/vnc
+COPY msg /etc/vnc
+COPY session.conf /etc/xdg/lxqt/session.conf
+
+CMD cat /etc/vnc/msg
