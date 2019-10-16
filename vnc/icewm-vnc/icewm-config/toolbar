@@ -3,5 +3,5 @@
 # Place your variants in /usr/etc/icewm or in $HOME/.icewm since
 # modifications to this file will be overwritten when you reinstall icewm.
 #
-prog "xfce4-terminal" utilities-terminal xfce4-terminal
-prog "xfe file manager" folder_32x32.xpm xfe
+prog "Terminal" utilities-terminal xfce4-terminal
+prog "File Manager" folder_32x32.xpm xfe
