@@ -10,8 +10,6 @@ then
 add-vnc-user username [vnc-password]
 
 Configure a user to be able to run a desktop session over VNC.
-
-If vnc-password is not specified then the password will not be set for the user, and you will have to set it manually by running vncpasswd.
 EOT
     exit 1
 fi
@@ -34,10 +32,12 @@ openssl req \
     -subj '/CN=${VNC_USER}' \
     -nodes
 
+echo "Setting user password..."
 if [ $# = 2 ]
 then
-    echo "Setting user password..."
     bash -c "vncpasswd -f <<< '$2' > ${VNC_USER_HOME}/.vnc/passwd"
+else
+    vncpasswd ${VNC_USER_HOME}/.vnc/passwd
 fi
 
 # Set appropriate permissions
