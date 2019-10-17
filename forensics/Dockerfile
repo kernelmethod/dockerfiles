@@ -39,16 +39,7 @@ EXPOSE 9999
 
 # VNC configuration
 ARG VNC_PASS=password
-RUN mkdir ${HOME}/.vnc \
-    && bash -c "vncpasswd -f <<< '${VNC_PASS}' > ${HOME}/.vnc/passwd" \
-    && openssl req \
-        -x509 \
-        -newkey rsa:4096 \
-        -keyout ${HOME}/.vnc/vnc.key \
-        -out ${HOME}/.vnc/vnc.cert \
-        -days 365 \
-        -subj '/CN=forensics' \
-        -nodes
+RUN add-vnc-user root "${VNC_PASS}"
 
 VOLUME /persistent
 COPY run.sh /run.sh
