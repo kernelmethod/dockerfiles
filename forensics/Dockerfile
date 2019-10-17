@@ -1,4 +1,4 @@
-FROM wshand/xfce-vnc:debian
+FROM wshand/icewm-vnc:debian
 
 ###
 ### Install packages for forensic analysis
@@ -51,4 +51,6 @@ RUN mkdir ${HOME}/.vnc \
 
 VOLUME /persistent
 COPY run.sh /run.sh
+
+ENV SCREEN_DIMS="1200x800"
 CMD [ "/run.sh" ]

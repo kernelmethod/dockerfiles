@@ -5,6 +5,8 @@ services:
     build:
       context: .
     image: wshand/forensics
+    environment:
+      SCREEN_DIMS: "1200x800"
     volumes:
       - "forensics:/persistent"
 

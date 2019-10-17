@@ -2,7 +2,7 @@
 
 # Start the VNC server
 vncserver \
-    -geometry 1200x800 \
+    -geometry ${SCREEN_DIMS} \
     -PasswordFile ${HOME}/.vnc/passwd \
     -xstartup /etc/vnc/xstartup \
     -localhost no \
