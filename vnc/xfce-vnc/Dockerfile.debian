@@ -27,6 +27,6 @@ RUN groupadd ${VNC_GROUP} \
     && echo "%${VNC_GROUP} ALL = NOPASSWD: $(which startxfce4)" \
         >> /etc/sudoers \
     # Add a line to the add-vnc-user script that adds the user to VNC_GROUP
-    && echo -e "usermod -aG ${VNC_GROUP} \$1" >> /etc/vnc/add-vnc-user.sh
+    && echo "usermod -aG ${VNC_GROUP} \$1" >> /etc/vnc/add-vnc-user.sh
 
 CMD cat /etc/vnc/msg
