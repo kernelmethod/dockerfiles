@@ -4,6 +4,8 @@ services:
   forensics:
     build:
       context: .
+      args:
+        FROM_IMAGE: wshand/icewm-vnc:debian
     image: wshand/forensics
     environment:
       SCREEN_DIMS: "1200x800"

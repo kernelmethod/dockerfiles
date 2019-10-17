@@ -1,4 +1,5 @@
-FROM wshand/icewm-vnc:debian
+ARG FROM_IMAGE
+FROM ${FROM_IMAGE}
 
 ###
 ### Install packages for forensic analysis
