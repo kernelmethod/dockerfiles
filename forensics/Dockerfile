@@ -13,6 +13,7 @@ RUN apt-get update \
         zip \
         less \
         git \
+        vim \
     && ln -s $(which python3) $(dirname $(which python3))/python
 
 # Memory analysis
@@ -22,17 +23,15 @@ RUN apt-get install -y \
         xdot
 
 # File analysis, data carving
-RUN \
-    # Install binwalk
-    git clone --depth 1 \
+RUN git clone --depth 1 \
         https://github.com/ReFirmLabs/binwalk.git \
         /usr/share/binwalk \
     && cd /usr/share/binwalk \
     && python3 setup.py install \
-    # Install sleuthkit with autopsy frontend
     && apt-get install -y \
         sleuthkit \
-        autopsy
+        autopsy \
+        xxd
 
 # Port 9999: autopsy
 EXPOSE 9999
