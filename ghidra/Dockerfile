@@ -62,13 +62,13 @@ RUN ln -s ${GHIDRA_DIR}/ghidraRun /usr/bin/ghidra \
 
 # Add desktop application for Ghidra
 #RUN mkdir ${HOME}/Desktop
-#COPY Ghidra.desktop /home/${GHIDRA_USER}/Desktop/Ghidra.desktop
+#COPY ghidra/Ghidra.desktop /home/${GHIDRA_USER}/Desktop/Ghidra.desktop
 #RUN chmod 700 /home/${GHIDRA_USER}/Desktop/Ghidra.desktop \
 #    && echo "Icon=${GHIDRA_DIR}/ghidra.png" \
 #        >> /home/${GHIDRA_USER}/Desktop/Ghidra.desktop \
 #    && chown -R ${GHIDRA_USER}:${GHIDRA_USER} /home/${GHIDRA_USER}
 
-COPY ghidra.png /usr/share/icewm/icons
+COPY ghidra/ghidra.png /usr/share/icewm/icons
 ADD icewm-config/ /usr/share/icewm/
 
 # Add VNC configuration for GHIDRA_USER
