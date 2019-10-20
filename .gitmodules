@@ -4,3 +4,6 @@
 [submodule "submodules/docker-stacks"]
 	path = submodules/jupyter-docker-stacks
 	url = https://github.com/jupyter/docker-stacks.git
+[submodule "submodules/kali-docker"]
+	path = submodules/kali-docker
+	url = https://gitlab.com/kalilinux/build-scripts/kali-docker.git
