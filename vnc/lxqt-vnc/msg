@@ -24,7 +24,6 @@ this container. You can run it with
 To start a VNC server, you can run a command along the lines of the following:
 
     vncserver \
-        # Make display 1200px wide, 800px tall
         -geometry 1200x800 \
         -localhost no \
         -X509Key ${HOME}/.vnc/vnc.key \
