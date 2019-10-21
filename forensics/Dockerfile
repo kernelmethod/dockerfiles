@@ -8,6 +8,7 @@ FROM ${FROM_IMAGE}
 # General packages
 RUN apt-get update \
     && apt-get install -y \
+        # General tools
         python3 \
         python3-pip \
         zip \
@@ -32,6 +33,10 @@ RUN git clone --depth 1 \
         sleuthkit \
         autopsy \
         xxd
+
+RUN apt-get purge \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Port 9999: autopsy
 EXPOSE 9999
