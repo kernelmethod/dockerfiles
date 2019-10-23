@@ -7,3 +7,6 @@
 [submodule "submodules/kali-docker"]
 	path = submodules/kali-docker
 	url = https://gitlab.com/kalilinux/build-scripts/kali-docker.git
+[submodule "submodules/endlessh"]
+	path = submodules/endlessh
+	url = https://github.com/skeeto/endlessh.git
