@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+
+  # Adbhoney service
+  adbhoney:
+    build: .
+    container_name: adbhoney
+    restart: always
+    networks:
+     - adbhoney_local
+    ports:
+     - "5555:5555"
+    image: wshand/adbhoney:latest
+    read_only: true
+    volumes:
+      - adbhoney:/persistent:rw
+
+volumes:
+  adbhoney:
+
+networks:
+  adbhoney_local:

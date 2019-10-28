@@ -1,0 +1,88 @@
+version: '3'
+
+services:
+
+  adbhoney:
+    build:
+      context: ./adbhoney
+    image: wshand/adbhoney:latest
+    networks:
+     - adbhoney_local
+    ports:
+     - "5555:5555"
+    read_only: true
+    restart: always
+    volumes:
+      - adbhoney:/persistent:rw
+
+  cowrie:
+    build:
+      context: ./cowrie
+    image: wshand/cowrie:latest
+    tmpfs:
+     - /tmp/cowrie:uid=2000,gid=2000
+     - /tmp/cowrie/data:uid=2000,gid=2000
+    networks:
+      - cowrie_local
+    ports:
+     - "22:22"
+     - "23:23"
+    read_only: true
+    restart: always
+    volumes:
+     - cowrie:/persistent
+
+  dionaea:
+    build:
+      context: ./dionaea
+      args:
+        DIONAEA_VERSION: 0.8.0
+    image: wshand/dionaea:latest
+    networks:
+      - dionaea_local
+    stdin_open: true
+    tty: true
+    ports:
+     - "20:20"
+     - "21:21"
+     - "42:42"
+     - "69:69/udp"
+     - "81:81"
+     - "135:135"
+     - "443:443"
+     - "445:445"
+     - "1433:1433"
+     - "1723:1723"
+     - "1883:1883"
+     - "3306:3306"
+     - "5060:5060"
+     - "5060:5060/udp"
+     - "5061:5061"
+     - "27017:27017"
+    read_only: true
+    restart: always
+    volumes:
+      - dionaea:/persistent:rw
+
+  logrotate:
+    build:
+      context: ./logrotate
+    image: wshand/honeypot-logrotate:latest
+    networks:
+      - logrotate_local
+    restart: always
+    volumes:
+      - adbhoney:/opt/adbhoney:rw
+      - cowrie:/opt/cowrie:rw
+      - dionaea:/opt/dionaea:rw
+
+volumes:
+  adbhoney:
+  cowrie:
+  dionaea:
+
+networks:
+  adbhoney_local:
+  cowrie_local:
+  dionaea_local:
+  logrotate_local:

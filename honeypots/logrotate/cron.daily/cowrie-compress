@@ -1,0 +1,20 @@
+#!/bin/sh
+
+COMPRESSED=${COWRIE}/compressed
+MAX_SIZE=150 # 150Mb
+DATE=$(date +"%d-%m-%Y")
+
+if [ ! -d $COMPRESSED ]
+then
+    mkdir -p $COMPRESSED
+fi
+
+cd /tmp
+if [ $(du -d 0 -m ${COWRIE}/dl | cut -d '	' -f1) -ge $MAX_SIZE ]
+then
+    mkdir /tmp/dl_${DATE}
+    mv ${COWRIE}/dl/* /tmp/dl_${DATE}
+    chown -R $(whoami):$(whomai) /tmp/dl_${DATE}
+    tar czf ${COMPRESSED}/dl_${DATE}.tgz dl_${DATE}
+    rm -rf /tmp/dl_${DATE}
+fi

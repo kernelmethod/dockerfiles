@@ -1,0 +1,32 @@
+#!/bin/sh
+
+COMPRESSED=${DIONAEA}/compressed
+MAX_BINARIES_SIZE=500 # 500 Mb
+MAX_BISTREAMS_SIZE=300 # 300 Mb
+DATE=$(date +"%d-%m-%Y")
+
+if [ ! -d $COMPRESSED ]
+then
+    mkdir -p $COMPRESSED
+fi
+
+cd /tmp
+if [ $(du -d 0 -m ${DIONAEA}/dionaea/binaries | cut -d '	' -f1) \
+        -ge ${MAX_BINARIES_SIZE} ]
+then
+    mkdir /tmp/binaries_${DATE}
+    mv ${DIONAEA}/dionaea/binaries/* /tmp/binaries_${DATE}
+    chown -R $(whoami):$(whoami) /tmp/binaries_${DATE}
+    tar czf ${COMPRESSED}/binaries_${DATE}.tgz binaries_${DATE}
+    rm -rf binaries_${DATE}
+fi
+
+if [ $(du -d 0 -m ${DIONAEA}/dionaea/bistreams | cut -d '	' -f1) \
+        -ge ${MAX_BISTREAMS_SIZE} ]
+then
+    mkdir /tmp/bistreams_${DATE}
+    mv ${DIONAEA}/dionaea/bistreams/* /tmp/bistreams_${DATE}
+    chown -R $(whoami):$(whoami) /tmp/bistreams_${DATE}
+    tar czf ${COMPRESSED}/bistreams_${DATE}.tgz bistreams_${DATE}
+    rm -rf bistreams_${DATE}
+fi
