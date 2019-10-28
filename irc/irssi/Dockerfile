@@ -1,9 +1,15 @@
 # Irssi IRC client
 # https://irssi.org/
 #
-FROM debian:buster-slim
+FROM alpine:3.10
 
-RUN apt-get update \
-    && apt-get install -y irssi
+RUN apk add -U irssi
 
+ARG USERNAME=irssi
+ARG NICKNAME=irssi
+
+RUN adduser -D -s /bin/false -h /home/${USERNAME} ${USERNAME}
+
+USER ${USERNAME}
+WORKDIR /home/${USERNAME}
 CMD [ "irssi" ]
