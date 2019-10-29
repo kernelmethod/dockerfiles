@@ -67,7 +67,6 @@ services:
      - "5060:5060/udp"
      - "5061:5061"
      - "27017:27017"
-    image: "wshand/dionaea:latest"
     read_only: true
     volumes:
       - dionaea:/persistent:rw
@@ -79,10 +78,26 @@ services:
         window: 120s
       resources:
         limits:
-          memory: 512M
-        reservations:
-          cpus: "0.25"
-          memory: 32M
+          memory: 192M
+
+  logrotate:
+    image: wshand/honeypot-logrotate:latest
+    networks:
+      - logrotate_local
+    volumes:
+      - adbhoney:/opt/adbhoney:rw
+      - cowrie:/opt/cowrie:rw
+      - dionaea:/opt/dionaea:rw
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 128M
 
 volumes:
   adbhoney:
@@ -93,3 +108,4 @@ networks:
   adbhoney_local:
   cowrie_local:
   dionaea_local:
+  logrotate_local:
