@@ -94,5 +94,5 @@ VOLUME $PERSISTENT
 ENV PYTHONPATH /home/cowrie/cowrie:/home/cowrie/cowrie/src
 WORKDIR /home/cowrie/cowrie
 USER cowrie:cowrie
-CMD ["/usr/bin/twistd", "--nodaemon", "-y", "cowrie.tac", \
-    "--pidfile", "/persistent/cowrie.pid", "cowrie"]
+COPY run.sh /home/cowrie
+CMD [ "/home/cowrie/run.sh" ]
