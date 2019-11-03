@@ -1,4 +1,4 @@
-FROM wshand/tigervnc:ubuntu
+FROM wshand/novnc:ubuntu
 
 ARG RELEASE
 ARG SHASUM

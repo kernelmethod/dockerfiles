@@ -1,34 +1,14 @@
-FROM wshand/tigervnc:debian
+FROM wshand/novnc:debian
 
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive \
         apt-get install -y \
             xfce4 \
             xfce4-goodies \
-            sudo \
     && apt-get purge \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Configure VNC
 ENV TERM=xterm-256color
-
 COPY xstartup /etc/vnc/
-COPY msg /etc/vnc/
-
-# Add the VNC_GROUP group, which is the only group of users that is permitted
-# to run vncserver. We give this group special sudo permissions that let them
-# start the desktop.
-ENV VNC_GROUP=vnc
-RUN groupadd ${VNC_GROUP} \
-    && chmod -R a-w /etc/vnc \
-    && find /usr/bin -type f -executable -iname "*vnc*" \
-        | xargs -I {} sh -c \
-            "chown root:${VNC_GROUP} {}; \
-            chmod 750 {};" \
-    && echo "%${VNC_GROUP} ALL = NOPASSWD: $(which startxfce4)" \
-        >> /etc/sudoers \
-    # Add a line to the add-vnc-user script that adds the user to VNC_GROUP
-    && echo "usermod -aG ${VNC_GROUP} \$1" >> /etc/vnc/add-vnc-user.sh
-
-CMD cat /etc/vnc/msg
