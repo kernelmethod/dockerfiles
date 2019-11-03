@@ -36,12 +36,13 @@ RUN apt-get update \
     && apt-get purge \
     && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir /etc/vnc \
-    && ln -s \
+RUN ln -s \
         $(which python3) \
         $(dirname $(which python3))/python \
     && ln -s \
         /usr/share/noVNC/utils/launch.sh \
         /usr/bin/start-novnc
 
-ADD xstartup /etc/vnc/
+ADD vnc/ /etc/vnc
+ADD x11/ /etc/x11
+COPY vnc.conf /etc/vnc.conf
