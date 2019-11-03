@@ -48,22 +48,6 @@ RUN apt-get update -y \
     && cmake -DCMAKE_INSTALL_PREFIX:PATH=/opt/dionaea .. \
     && make \
     && make install \
-# Setup user and groups
-    && addgroup \
-        --gid 2000 \
-        dionaea \
-    && adduser \
-        --system \
-        --no-create-home \
-        --shell /bin/bash \
-        --uid 2000 \
-        --disabled-password \
-        --disabled-login \
-        --gid 2000 \
-        dionaea \
-    && setcap \
-        cap_net_bind_service=+ep \
-        /opt/dionaea/bin/dionaea \
 # Supply configs and set permissions
     && rm -rf /opt/dionaea/etc/dionaea/* \
     && mv /root/dist/etc/* /opt/dionaea/etc/dionaea/ \
@@ -112,7 +96,24 @@ RUN apt-get update -y \
         /tmp/* \
         /var/tmp/*
 
-# Write all interesting data to the a persistent volume, by creating symlinks from
+RUN addgroup \
+        --gid 2000 \
+        dionaea \
+    && adduser \
+        --system \
+        --no-create-home \
+        --shell /bin/bash \
+        --uid 2000 \
+        --disabled-password \
+        --disabled-login \
+        --gid 2000 \
+        dionaea \
+# Allow unprivileged users to run services on privileged ports
+    && setcap \
+        "cap_net_bind_service=+ep" \
+        /opt/dionaea/bin/dionaea
+
+# Write all interesting data to a persistent volume, by creating symlinks from
 # /opt/dionaea/var to the volume. This allows us to use a read-only filesystem
 # while still preserving the information we want.
 ENV PERSISTENT="/persistent"
@@ -133,5 +134,6 @@ RUN mv /opt/dionaea/var ${PERSISTENT} \
 VOLUME $PERSISTENT
 
 # Start dionaea
-USER dionaea:dionaea
-CMD ["/opt/dionaea/bin/dionaea", "-u", "dionaea", "-g", "dionaea", "-c", "/opt/dionaea/etc/dionaea/dionaea.cfg"]
+#USER dionaea:dionaea
+#CMD ["/opt/dionaea/bin/dionaea", "-u", "dionaea", "-g", "dionaea", "-c", "/opt/dionaea/etc/dionaea/dionaea.cfg"]
+CMD ["/opt/dionaea/bin/dionaea", "dionaea", "-c", "/opt/dionaea/etc/dionaea/dionaea.cfg"]
