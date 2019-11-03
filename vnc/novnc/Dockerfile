@@ -38,7 +38,7 @@ RUN ln -s \
 
 ADD vnc/ /etc/vnc
 ADD x11/ /etc/x11
+ADD bin/ /usr/bin
 COPY vnc.conf /etc/vnc.conf
-COPY add-vnc-user.sh /usr/bin/add-vnc-user
 
 CMD [ "/bin/cat", "/etc/vnc/msg" ]
