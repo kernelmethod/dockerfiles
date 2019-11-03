@@ -39,7 +39,9 @@ RUN apt-get update \
 RUN mkdir /etc/vnc \
     && ln -s \
         $(which python3) \
-        $(dirname $(which python3))/python
+        $(dirname $(which python3))/python \
+    && ln -s \
+        /usr/share/noVNC/utils/launch.sh \
+        /usr/bin/start-novnc
 
-COPY xstartup /etc/vnc/
-COPY msg /etc/vnc/
+ADD xstartup /etc/vnc/

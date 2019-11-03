@@ -1,0 +1,30 @@
+wshand/noVNC
+noVNC server run in a Docker container.
+------------------------------------------------------------------------
+To configure VNC for $user, first execute
+
+    vncpasswd
+
+to set a password for the TigerVNC server for that user. Then, start
+the VNC server with 
+
+    vncserver \
+        -geometry 1200x800 \
+        -localhost yes \
+        -xstartup /etc/vnc/xstartup
+
+Create a TLS certificate and key with
+
+    # You could also COPY a key and certificate from a local file
+    openssl req -x509 -newkey rsa:4096 -keyout ${HOME}/.vnc/vnc.key \
+        -out ${HOME}/.vnc/vnc.cert -days 365 -subj '/CN=${USER}' -nodes
+
+Then, start the server with
+
+    start-novnc \
+        --web /usr/share/noVNC \
+        --cert ${HOME}/.vnc/vnc.cert \
+        --key ${HOME}/.vnc/vnc.key \
+        --ssl-only \
+        --vnc localhost:5901
+
