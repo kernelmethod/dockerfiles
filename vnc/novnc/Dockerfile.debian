@@ -37,4 +37,6 @@ ADD x11/ /etc/x11
 ADD bin/ /usr/bin
 COPY vnc.conf /etc/vnc.conf
 
+EXPOSE 6080
+
 CMD [ "/bin/cat", "/etc/vnc/msg" ]
