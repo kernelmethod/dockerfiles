@@ -1,13 +1,6 @@
 FROM debian:buster-slim
 
 RUN apt-get update \
-    && DEBIAN_FRONTEND=noninteractive \
-        apt-get install -y \
-            xfce4 \
-            xfce4-goodies \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN apt-get update \
     && apt-get upgrade -y \
     && DEBIAN_FRONTEND=noninteractive \
         apt-get install -y \
@@ -46,3 +39,6 @@ RUN ln -s \
 ADD vnc/ /etc/vnc
 ADD x11/ /etc/x11
 COPY vnc.conf /etc/vnc.conf
+COPY add-vnc-user.sh /usr/bin/add-vnc-user
+
+CMD [ "/bin/cat", "/etc/vnc/msg" ]
