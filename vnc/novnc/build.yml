@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+
+  novnc-debian:
+    build:
+      context: .
+      dockerfile: Dockerfile.debian
+    image: wshand/novnc:debian
+
+  novnc-ubuntu:
+    build:
+      context: .
+      dockerfile: Dockerfile.ubuntu
+    image: wshand/novnc:ubuntu

@@ -1,4 +1,4 @@
-FROM debian:buster-slim
+FROM ubuntu:18.04
 
 RUN apt-get update \
     && apt-get upgrade -y \
@@ -31,10 +31,7 @@ RUN apt-get update \
 
 RUN ln -s \
         $(which python3) \
-        $(dirname $(which python3))/python \
-    && ln -s \
-        /usr/share/noVNC/utils/launch.sh \
-        /usr/bin/start-novnc
+        $(dirname $(which python3))/python
 
 ADD vnc/ /etc/vnc
 ADD x11/ /etc/x11
