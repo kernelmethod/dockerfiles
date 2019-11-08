@@ -1,0 +1,21 @@
+# Compose file to assist with building the containers
+
+version: '3'
+
+services:
+  julia-base:
+    build:
+      context: .
+      args:
+        MAJOR_VERSION: "1.3"
+        MINOR_VERSION: "1.3.0-rc4"
+        JULIA_BINARIES: "https://julialang-s3.julialang.org/bin"
+    image: wshand/julia
+
+  julia-jupyter:
+    build:
+      context: .
+      dockerfile: Dockerfile.jupyter
+    image: wshand/julia-jupyter
+    ports:
+      - "8888:8888"
