@@ -1,0 +1,27 @@
+# docker-compose file to automate the building of the C/C++ environment
+# for both of the possible cases: when it should be based off of GCC,
+# and when it should be using LLVM.
+
+version: '3'
+
+services:
+
+  c-gcc:
+    build:
+      context: .
+      args:
+        CC: gcc
+    image: wshand/c:gcc
+
+  c-llvm:
+    build:
+      context: .
+      args:
+        CC: llvm
+        INSTALL_CLANG: 1
+        INSTALL_LIBFUZZER: 1
+        INSTALL_LLDB: 0
+        INSTALL_LLD: 1
+        INSTALL_LIBCPP: 1
+        INSTALL_OPENMP: 1
+    image: wshand/c:llvm
