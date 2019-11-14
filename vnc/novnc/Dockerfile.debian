@@ -14,7 +14,15 @@ RUN apt-get update \
     && git clone \
         --depth 1 \
         https://github.com/novnc/noVNC.git \
-        /usr/share/noVNC \
+        /tmp/noVNC \
+#
+# Only keep the files we need from the git repository
+    && mkdir -p /usr/share/noVNC \
+    && mv /tmp/noVNC/vnc.html /usr/share/noVNC \
+    && mv /tmp/noVNC/app      /usr/share/noVNC \
+    && mv /tmp/noVNC/core     /usr/share/noVNC \
+    && mv /tmp/noVNC/utils    /usr/share/noVNC \
+    && mv /tmp/noVNC/vendor   /usr/share/noVNC \
     && git clone \
         --depth 1 \
         https://github.com/novnc/websockify.git \
@@ -26,6 +34,7 @@ RUN apt-get update \
         python3-pip \
     && apt-get autoremove -y \
     && apt-get purge \
+    && rm -rf /tmp/* \
     && rm -rf /var/lib/apt/lists/*
 
 RUN ln -s \
