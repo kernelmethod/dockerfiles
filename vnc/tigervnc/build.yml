@@ -1,13 +1,17 @@
 version: '3'
 
 services:
+
   tigervnc-ubuntu:
     build:
       context: .
-      dockerfile: Dockerfile.ubuntu
+      args:
+        FROM_IMAGE: ubuntu:18.04
     image: wshand/tigervnc:ubuntu
+
   tigervnc-debian:
     build:
       context: .
-      dockerfile: Dockerfile.debian
+      args:
+        FROM_IMAGE: debian:buster-slim
     image: wshand/tigervnc:debian
