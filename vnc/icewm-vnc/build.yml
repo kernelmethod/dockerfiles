@@ -1,19 +1,21 @@
 version: '3'
 
 services:
+
   icewm-vnc-debian:
     build:
       context: .
-      dockerfile: Dockerfile.debian
       args:
         RELEASE: 1.6.2
         SHASUM: 56391479e0d66ab973825f21cdb0703a55d509cc
+        FROM_IMAGE: wshand/novnc:debian
     image: wshand/icewm-vnc:debian
+
   icewm-vnc-ubuntu:
     build:
       context: .
-      dockerfile: Dockerfile.ubuntu
       args:
         RELEASE: 1.6.2
         SHASUM: 56391479e0d66ab973825f21cdb0703a55d509cc
+        FROM_IMAGE: wshand/novnc:ubuntu
     image: wshand/icewm-vnc:ubuntu

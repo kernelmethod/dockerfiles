@@ -1,4 +1,5 @@
-FROM wshand/novnc:ubuntu
+ARG FROM_IMAGE
+FROM "${FROM_IMAGE}"
 
 ARG RELEASE
 ARG SHASUM
