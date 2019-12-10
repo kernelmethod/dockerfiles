@@ -1,13 +1,17 @@
 version: '3'
 
 services:
+
   lxde-vnc-debian:
     build:
       context: .
-      dockerfile: Dockerfile.debian
+      args:
+        FROM_IMAGE: wshand/novnc:debian
     image: wshand/lxqt-vnc:debian
+
   lxde-vnc-ubuntu:
     build:
       context: .
-      dockerfile: Dockerfile.ubuntu
+      args:
+        FROM_IMAGE: wshand/novnc:ubuntu
     image: wshand/lxqt-vnc:ubuntu

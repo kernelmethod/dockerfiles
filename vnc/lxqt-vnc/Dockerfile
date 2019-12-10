@@ -1,4 +1,5 @@
-FROM wshand/novnc:debian
+ARG FROM_IMAGE
+FROM "${FROM_IMAGE}"
 
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive \
