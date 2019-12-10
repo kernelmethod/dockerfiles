@@ -5,11 +5,13 @@ services:
   novnc-debian:
     build:
       context: .
-      dockerfile: Dockerfile.debian
+      args:
+        FROM_IMAGE: debian:buster-slim
     image: wshand/novnc:debian
 
   novnc-ubuntu:
     build:
       context: .
-      dockerfile: Dockerfile.ubuntu
+      args:
+        FROM_IMAGE: ubuntu:18.04
     image: wshand/novnc:ubuntu

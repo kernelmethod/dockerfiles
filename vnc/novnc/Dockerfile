@@ -1,4 +1,5 @@
-FROM ubuntu:18.04
+ARG FROM_IMAGE
+FROM "${FROM_IMAGE}"
 
 RUN apt-get update \
     && apt-get upgrade -y \
@@ -18,11 +19,12 @@ RUN apt-get update \
 #
 # Only keep the files we need from the git repository
     && mkdir -p /usr/share/noVNC \
-    && mv /tmp/noVNC/vnc.html /usr/share/noVNC \
-    && mv /tmp/noVNC/app      /usr/share/noVNC \
-    && mv /tmp/noVNC/core     /usr/share/noVNC \
-    && mv /tmp/noVNC/utils    /usr/share/noVNC \
-    && mv /tmp/noVNC/vendor   /usr/share/noVNC \
+    && mv /tmp/noVNC/vnc.html       /usr/share/noVNC \
+    && mv /tmp/noVNC/app            /usr/share/noVNC \
+    && mv /tmp/noVNC/core           /usr/share/noVNC \
+    && mv /tmp/noVNC/utils          /usr/share/noVNC \
+    && mv /tmp/noVNC/vendor         /usr/share/noVNC \
+    && mv /tmp/noVNC/package.json   /usr/share/noVNC \
     && git clone \
         --depth 1 \
         https://github.com/novnc/websockify.git \
