@@ -1,4 +1,5 @@
-FROM wshand/novnc:ubuntu
+ARG FROM_IMAGE
+FROM "${FROM_IMAGE}"
 
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive \
@@ -17,4 +18,9 @@ COPY xstartup /etc/vnc/
 # Change x-terminal-emulator to /usr/bin/xfce4-terminal.wrapper so that we
 # avoid "input/output error" when attempting to open a terminal in a VNC
 # session.
-RUN bash -c "update-alternatives --config x-terminal-emulator <<< 2"
+RUN rm -f \
+        $(which x-terminal-emulator) \
+        /etc/alternatives/x-terminal-emulator \
+    && ln -s \
+        /usr/bin/gnome-terminal.wrapper \
+        /usr/bin/x-terminal-emulator
