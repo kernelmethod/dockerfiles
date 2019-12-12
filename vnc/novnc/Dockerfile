@@ -72,6 +72,12 @@ ADD x11/ /etc/x11
 ADD bin/ /usr/local/bin
 COPY vnc.conf /etc/vnc.conf
 
+#
+# Make some modifications to the NoVNC source for convenience purposes
+COPY reconfigure_novnc.sh /tmp
+RUN /tmp/reconfigure_novnc.sh "${NOVNC_DIRECTORY}" \
+    && rm /tmp/reconfigure_novnc.sh
+
 EXPOSE 6080
 
 CMD [ "/bin/cat", "/etc/vnc/msg" ]
