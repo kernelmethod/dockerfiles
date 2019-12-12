@@ -2,12 +2,13 @@
 
 # Start the VNC server
 vncserver \
-    -geometry 1200x800 \
-    -PasswordFile ${HOME}/.vnc/passwd \
+    -SecurityTypes None \
     -xstartup /etc/vnc/xstartup \
-    -localhost no \
-    -X509Key ${HOME}/.vnc/vnc.key \
-    -X509Cert ${HOME}/.vnc/vnc.cert
+    -localhost yes
+
+launch-novnc \
+    --web ${NOVNC_DIRECTORY} \
+    --vnc localhost:5901
 
 # Wait indefinitely
 tail -f /dev/null
