@@ -1,3 +1,4 @@
+#!/usr/bin/env xdg-open
 [Desktop Entry]
 Version=1.0
 Type=Application
@@ -5,6 +6,5 @@ Name=Terminal
 Comment=Run Xfce terminal emulator
 Exec=xfce4-terminal
 Icon=utilities-terminal
-Path=
 Terminal=false
 StartupNotify=true
