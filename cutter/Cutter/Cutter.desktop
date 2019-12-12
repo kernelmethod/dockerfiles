@@ -6,4 +6,4 @@ Terminal=false
 Exec=/usr/local/bin/Cutter
 Name=Cutter
 Comment=Run Cutter
-Icon=/usr/share/icons/cutter.svg
+Icon=/usr/share/Cutter/cutter.svg
