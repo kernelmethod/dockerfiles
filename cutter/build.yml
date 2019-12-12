@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+
+  cutter:
+    build:
+      context: .
+      args:
+        CUTTER_VERSION: "v1.9.0"
+    image: wshand/cutter:latest
+    ports:
+      - "6080:6080"

@@ -1,5 +1,9 @@
-#FROM wshand/xfce-vnc:debian
-FROM wshand/icewm-vnc:debian
+ARG FROM_IMAGE
+FROM "${FROM_IMAGE}"
+
+ENV GHIDRA_DIR=/usr/share/ghidra
+ARG GHIDRA_VERSION
+ARG GHIDRA_SHA
 
 RUN apt-get update \
     # Create directory to fix bug we would get otherwise
@@ -12,15 +16,7 @@ RUN apt-get update \
         unzip \
         ca-certificates \
         default-jdk \
-    && apt-get clean
-
-ENV GHIDRA_DIR /usr/share/ghidra
-
-# Install Ghidra
-ARG GHIDRA_VERSION
-ARG GHIDRA_SHA
-
-RUN mkdir -p ${GHIDRA_DIR} \
+    && mkdir -p ${GHIDRA_DIR} \
     && cd /tmp \
     && wget "https://ghidra-sre.org/ghidra_${GHIDRA_VERSION}.zip" \
         --progress=bar:force \
@@ -28,44 +24,63 @@ RUN mkdir -p ${GHIDRA_DIR} \
     && echo "${GHIDRA_SHA}  /tmp/ghidra.zip" \
         | sha256sum -c - \
     && unzip /tmp/ghidra.zip \
-    && mv ghidra_$(echo $GHIDRA_VERSION | cut -d '_' -f1)/* ${GHIDRA_DIR} \
+    && GHIDRA=$(find /tmp -maxdepth 1 -type d -iname "ghidra*" | head -n 1) \
+    && mv ${GHIDRA}/* ${GHIDRA_DIR} \
+#
+# Cleanup
+    && apt-get remove -y \
+        wget \
+        unzip \
+    && apt-get autoremove -y \
+    && apt-get purge \
     && rm -rf \
         ${GHIDRA_DIR}/docs \
         ${GHIDRA_DIR}/license \
         ${GHIDRA_DIR}/Extensions/Ghidra \
         ${GHIDRA_DIR}/Extensions/Eclipse \
         /tmp/ghidra* \
+        /var/lib/apt/lists/* \
     && find ${GHIDRA_DIR} \
         -type f \
         -name "*src*.zip" \
-        -print0 \
-        | xargs -0 rm
+        -exec rm {} \;
 
-COPY server.conf ${GHIDRA_DIR}/server/server.conf
+COPY ghidra/server.conf ${GHIDRA_DIR}/server/server.conf
 
 # Add Ghidra to PATH, and add entrypoint
-USER root
-COPY run.sh /run.sh
 RUN ln -s ${GHIDRA_DIR}/ghidraRun /usr/bin/ghidra
 
-# Add desktop application for Ghidra
-#RUN mkdir ${HOME}/Desktop
-#COPY ghidra/Ghidra.desktop /root/Desktop/Ghidra.desktop
-#COPY ghidra/ghidra.png ${GHIDRA_DIR}/ghidra.png
-#RUN chmod 700 /root/Desktop/Ghidra.desktop \
-#    && echo "Icon=${GHIDRA_DIR}/ghidra.png" \
-#        >> /root/Desktop/Ghidra.desktop
+# Add a user for RE
+ENV GHIDRA_USER=ghidra
+ENV GHIDRA_USER_HOME=/home/${GHIDRA_USER}
+RUN useradd \
+        --shell /bin/bash \
+        --create-home \
+        --home-dir /home/${GHIDRA_USER} \
+        ${GHIDRA_USER}
 
-COPY ghidra/ghidra.png /usr/share/icewm/icons
-ADD icewm-config/ /usr/share/icewm/
+
+# Add desktop icon for Ghidra
+RUN mkdir -p /home/${GHIDRA_USER}/Desktop
+COPY ghidra/Ghidra.desktop /home/${GHIDRA_USER}/Desktop/Ghidra.desktop
+COPY ghidra/ghidra.png ${GHIDRA_DIR}/ghidra.png
+RUN chmod 700 /home/${GHIDRA_USER}/Desktop/Ghidra.desktop \
+    && echo "Icon=${GHIDRA_DIR}/ghidra.png" \
+    >> /home/${GHIDRA_USER}/Desktop/Ghidra.desktop \
+    && chown -R ${GHIDRA_USER}:${GHIDRA_USER} /home/${GHIDRA_USER}
+
+#COPY ghidra/ghidra.png /usr/share/icewm/icons
+#ADD icewm-config/ /usr/share/icewm/
+
+USER ${GHIDRA_USER}
 
 # Add VNC configuration for GHIDRA_USER
 ARG VNC_PASS="ghidra"
-RUN add-vnc-user root ${VNC_PASS}
+RUN add-vnc-user -u ${GHIDRA_USER} -p ${VNC_PASS}
 
-#USER ${GHIDRA_USER}
-WORKDIR /root
-EXPOSE 13100 13101 13102
+WORKDIR /home/${GHIDRA_USER}
+COPY run.sh .
+#EXPOSE 13100 13101 13102
 
 VOLUME /projects
-CMD [ "/run.sh" ]
+CMD [ "./run.sh" ]

@@ -7,37 +7,39 @@ FROM ${FROM_IMAGE}
 
 # General packages
 RUN apt-get update \
+    && apt-get upgrade -y \
     && apt-get install -y \
         # General tools
         python3 \
         python3-pip \
-        zip \
         less \
-        git \
-        vim
-
-# Memory analysis
-RUN apt-get install -y \
+        vim \
+        # Memory analysis
         volatility \
         volatility-tools \
-        xdot
+        xdot \
+        # File analysis, data carving
+        sleuthkit \
+        autopsy \
+        xxd \
+#
+# Cleanup
+    && rm -rf /var/lib/apt/lists/*
+
+COPY Terminal.desktop /root/Desktop/Terminal.desktop
 
 # File analysis, data carving
-RUN git clone --depth 1 \
+RUN apt-get update \
+    && apt-get install -y git \
+    && git clone --depth 1 \
         https://github.com/ReFirmLabs/binwalk.git \
         /usr/share/binwalk \
     && cd /usr/share/binwalk \
     && python3 setup.py install \
-    && apt-get install -y \
-        sleuthkit \
-        autopsy \
-        xxd
-
-RUN apt-get purge \
-    && apt-get clean \
+    && apt-get remove -y git \
+    && apt-get autoremove -y \
+    && apt-get purge \
     && rm -rf /var/lib/apt/lists/*
-
-COPY Terminal.desktop /root/Desktop/Terminal.desktop
 
 # Port 9999: autopsy
 EXPOSE 9999
