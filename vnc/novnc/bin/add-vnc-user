@@ -4,17 +4,51 @@
 ### Simple bash script to create a new user for the VNC
 ###
 
-if [[ $# < 1 ]] || [[ $# > 2 ]]
-then
-    cat <<- EOT
-add-vnc-user username [vnc-password]
+function print_help {
+    cat <<- EOTEXT
+usage:
+    add-vnc-user -h             This help message.
 
-Configure a user to be able to run a desktop session over VNC.
-EOT
-    exit 1
+    add-vnc-user
+        -u user                 The user you want to be able to run vncserver.
+        [-p password]           The user's password for the VNC server. If not
+                                specified on the command line, you will be
+                                prompted to enter a password in the terminal.
+
+EOTEXT
+}
+
+export VNC_USER=""
+export PASSWORD=""
+
+while getopts "hu:p:" opt
+do
+    case "${opt}" in
+        u)
+            export VNC_USER="${OPTARG}"
+            ;;
+        p)
+            export PASSWORD="${OPTARG}"
+            ;;
+        h)
+            print_help
+            exit
+            ;;
+        \? )
+            echo "Invalid option: -${OPTARG}" 1>&2
+            print_help
+            exit
+            ;;
+    esac
+done
+
+if [[ "${VNC_USER}" == "" ]]
+then
+    echo "Error: VNC user not specified with the -u flag."
+    print_help
+    exit
 fi
 
-export VNC_USER=$1
 export VNC_USER_HOME=$(eval echo ~$VNC_USER)
 
 echo "Configuring VNC for ${VNC_USER}..."
@@ -32,9 +66,9 @@ openssl req \
     -nodes
 
 echo "Setting user password..."
-if [ $# = 2 ]
+if [[ ! "${PASSWORD}" == "" ]]
 then
-    bash -c "vncpasswd -f <<< '$2' > ${VNC_USER_HOME}/.vnc/passwd"
+    bash -c "vncpasswd -f <<< '${PASSWORD}' > ${VNC_USER_HOME}/.vnc/passwd"
 else
     vncpasswd ${VNC_USER_HOME}/.vnc/passwd
 fi
