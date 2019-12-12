@@ -14,8 +14,7 @@ RUN apt-get update \
         zip \
         less \
         git \
-        vim \
-    && ln -s $(which python3) $(dirname $(which python3))/python
+        vim
 
 # Memory analysis
 RUN apt-get install -y \
@@ -38,12 +37,14 @@ RUN apt-get purge \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+COPY Terminal.desktop /root/Desktop/Terminal.desktop
+
 # Port 9999: autopsy
 EXPOSE 9999
 
 # VNC configuration
 ARG VNC_PASS=password
-RUN add-vnc-user root "${VNC_PASS}"
+RUN add-vnc-user -u root -p "${VNC_PASS}"
 
 VOLUME /persistent
 COPY run.sh /run.sh

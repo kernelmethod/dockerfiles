@@ -2,12 +2,12 @@
 
 # Start the VNC server
 vncserver \
-    -geometry ${SCREEN_DIMS} \
-    -PasswordFile ${HOME}/.vnc/passwd \
+    -SecurityTypes None \
     -xstartup /etc/vnc/xstartup \
-    -localhost no \
-    -X509Key ${HOME}/.vnc/vnc.key \
-    -X509Cert ${HOME}/.vnc/vnc.cert
+    -localhost yes
 
-# Wait indefinitely
-tail -f /dev/null
+# Start the NoVNC server to make the container accessible
+# through the browser.
+launch-novnc \
+    --web "${NOVNC_DIRECTORY}" \
+    --vnc localhost:5901

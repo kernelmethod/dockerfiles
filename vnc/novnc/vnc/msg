@@ -1,31 +1,116 @@
 wshand/noVNC
 noVNC server run in a Docker container.
 ------------------------------------------------------------------------
-To configure VNC for $user, first execute
+This is the base image for multiple Docker containers that provide
+desktop access through a NoVNC server. In order to run it, you must first
+install some kind of desktop that you can serve over VNC.
 
-    vncpasswd
+From there, you should run `/usr/bin/vncserver` followed by
+`/usr/local/bin/launch-novnc` in order to start the NoVNC server. You
+may also need to generate a password for your user to access the server
+(which is made a little easier through an add-vnc-user script).
 
-    # You could also COPY a key and certificate from a local file
-    openssl req -x509 -newkey rsa:4096 -keyout ${HOME}/.vnc/vnc.key \
-        -out ${HOME}/.vnc/vnc.cert -days 365 -subj '/CN=${USER}' -nodes
+ex:
 
-to set a password for the TigerVNC server for that user, and to create
-a TLS certificate for them. You can also use the add-vnc-user script to
-do both of these steps for you:
+    /usr/local/bin/add-vnc-user $password
 
-    add-vnc-user username [vnc-password]
+    /usr/bin/vncserver \
+        -xstartup /etc/vnc/xstartup
 
-Then, start the VNC server with
-
-    vncserver
-
-(You can add flags if the options in /etc/vnc.conf aren't to your liking.)
-Now run the noVNC server with
-
-    start-novnc \
-        --web /usr/share/noVNC \
-        --cert ${HOME}/.vnc/vnc.cert \
-        --key ${HOME}/.vnc/vnc.key \
-        --ssl-only \
+    # Note: ${NOVNC_DIRECTORY} is an environmental variable that
+    # points to the directory containing the files (code, HTML, etc.)
+    # for NoVNC.
+    /usr/local/bin/launch-novnc \
+        --web ${NOVNC_DIRECTORY} \
         --vnc localhost:5901
+
+Documentation for VNC tools
+------------------------------------------------------------------------
+# vncserver --help
+usage:
+  vncserver -help|-h|-?            This help message. Further help in tigervncserver(1).
+
+  vncserver [:<number>]            X11 display for VNC server
+            [-dry-run]             Take no real action
+            [-verbose]             Be more verbose
+            [-useold]              Only start VNC server if not already running
+            [-name <desktop-name>] VNC desktop name
+            [-depth <depth>]       Desktop bit depth (8|16|24|32)
+            [-pixelformat          X11 server pixel format
+              rgb888|rgb565|rgb332   blue color channel encoded in lower bits
+             |bgr888|bgr565|bgr233]  red color channel encoded in lower bits
+            [-geometry <dim>]      Desktop geometry in <width>x<height>
+            [-xdisplaydefaults]    Get geometry and pixelformat from running X
+            [-wmDecoration <dim>]  Shrink geometry from xdisplaydefaults by dim
+            [-localhost yes|no]    Only accept VNC connections from localhost
+            [-rfbport port]        TCP port to listen for RFB protocol
+            [-httpPort     port]   Port of internal http server
+            [-baseHttpPort port]   Calculate http port from base port + display nr
+            [-fg]                  No daemonization and
+                                   kill the VNC server after its X session has terminated
+            [-autokill]            Kill the VNC server after its X session has terminated
+            [-noxstartup]          Do not run the Xvnc-session script after launching Xtigervnc
+            [-xstartup]            Specify the script to start after launching Xtigervnc
+            [-fp fontpath]         Colon separated list of font locations
+            [-cleanstale]          Do not choke on a stale lockfile
+            [-SecurityTypes]       Comma list of security types to offer (None, VncAuth,
+                                   Plain, TLSNone, TLSVnc, TLSPlain, X509None, X509Vnc,
+                                   X509Plain). On default, offer only VncAuth.
+            [-PlainUsers]          In case of security types Plain, TLSPlain, and X509Plain,
+                                   this options specifies the list of authorized users.
+            [-PAMService]          In case of security types Plain, TLSPlain, and X509Plain,
+                                   this options specifies the service name for PAM password
+                                   validation (default vnc if present otherwise tigervnc).
+            [-PasswordFile]        Password file for security types VncAuth, TLSVnc, and X509Vnc.
+                                   The default password file is ~/.vnc/passwd
+            [-passwd]              Alias for PasswordFile
+            [-rfbauth]             Alias for PasswordFile
+            [-X509Key]             Path to the key of the X509 certificate in PEM format. This
+                                   is used by the security types X509None, X509Vnc, and X509Plain.
+            [-X509Cert]            Path to the X509 certificate in PEM format. This is used by
+                                   the security types X509None, X509Vnc, and X509Plain.
+            <X11-options ...>      Further options for Xtigervnc(1)
+            [-- sessiontype]       Arguments for the VNC startup script Xvnc-session
+
+  vncserver -kill                  Kill a VNC server
+            [:<number>|:*]         VNC server to kill, * for all
+            [-dry-run]             Take no real action
+            [-verbose]             Be more verbose
+            [-clean]               Also clean log files of VNC session
+
+  vncserver -list                  List VNC server sessions
+            [:<number>|:*]         VNC server to list, * for all
+            [-cleanstale]          Do not list stale VNC server sessions
+
+------------------------------------------------------------------------
+# launch-novnc --help
+Usage: launch.sh [--listen PORT] [--vnc VNC_HOST:PORT] [--cert CERT] [--ssl-only]
+
+Starts the WebSockets proxy and a mini-webserver and
+provides a cut-and-paste URL to go to.
+
+    --listen PORT         Port for proxy/webserver to listen on
+                          Default: 6080
+    --vnc VNC_HOST:PORT   VNC server host:port proxy target
+                          Default: localhost:5900
+    --cert CERT           Path to combined cert/key file, or just
+                          the cert file if used with --key
+                          Default: self.pem
+    --key KEY             Path to key file, when not combined with cert
+    --web WEB             Path to web files (e.g. vnc.html)
+                          Default: ./
+    --ssl-only            Disable non-https connections.
+
+    --record FILE         Record traffic to FILE.session.js
+
+------------------------------------------------------------------------
+# add-vnc-user -h
+usage:
+    add-vnc-user -h             This help message.
+
+    add-vnc-user
+        -u user                 The user you want to be able to run vncserver.
+        [-p password]           The user's password for the VNC server. If not
+                                specified on the command line, you will be
+                                prompted to enter a password in the terminal.
 
