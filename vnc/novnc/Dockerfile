@@ -49,10 +49,8 @@ RUN apt-get update \
     && mv /tmp/noVNC/vendor         ${NOVNC_DIRECTORY} \
     && mv /tmp/noVNC/package.json   ${NOVNC_DIRECTORY} \
 #
-# Move the noVNC startup file directly into ${VNC_DIRECTORY}.
-# This ensures that the launch script is outside of the
-# directory that the NoVNC web server runs on, which could
-# have potential security implications.
+# Move the noVNC startup file directly into ${VNC_DIRECTORY},
+# so that it can't be written to or read via the web server.
     && mv \
         ${NOVNC_DIRECTORY}/utils/launch.sh \
         ${VNC_DIRECTORY} \
