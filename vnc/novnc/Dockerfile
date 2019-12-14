@@ -33,7 +33,8 @@ RUN apt-get update \
 # Create a separate directory, VNC_DIRECTORY, in which
 # to store NoVNC and websockify. Only keep the files
 # from these two repositories that we need.
-    && mkdir -p ${VNC_DIRECTORY}/noVNC \
+    && mkdir -p ${VNC_DIRECTORY} \
+    && mkdir -p ${NOVNC_DIRECTORY} \
     && git clone \
         --depth 1 \
         https://github.com/novnc/noVNC.git \
