@@ -33,7 +33,8 @@ RUN apt-get update \
 # Create a separate directory, VNC_DIRECTORY, in which
 # to store NoVNC and websockify. Only keep the files
 # from these two repositories that we need.
-    && mkdir -p ${VNC_DIRECTORY}/noVNC \
+    && mkdir -p ${VNC_DIRECTORY} \
+    && mkdir -p ${NOVNC_DIRECTORY} \
     && git clone \
         --depth 1 \
         https://github.com/novnc/noVNC.git \
@@ -49,10 +50,8 @@ RUN apt-get update \
     && mv /tmp/noVNC/vendor         ${NOVNC_DIRECTORY} \
     && mv /tmp/noVNC/package.json   ${NOVNC_DIRECTORY} \
 #
-# Move the noVNC startup file directly into ${VNC_DIRECTORY}.
-# This ensures that the launch script is outside of the
-# directory that the NoVNC web server runs on, which could
-# have potential security implications.
+# Move the noVNC startup file directly into ${VNC_DIRECTORY},
+# so that it can't be written to or read via the web server.
     && mv \
         ${NOVNC_DIRECTORY}/utils/launch.sh \
         ${VNC_DIRECTORY} \
