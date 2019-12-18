@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+
+  # Tarpit for the following services:
+  # - SSH (port 2222)
+  # - HTTP (port 8080)
+  tarpit:
+    build:
+      context: .
+    image: wshand/tarpits

@@ -1,0 +1,25 @@
+version: 1
+
+formatters:
+  basic:
+    format: '[%(asctime)s] %(name)s (%(levelname)s): %(message)s'
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    formatter: basic
+    stream: ext://sys.stdout
+
+  tarpit_log_file:
+    class: logging.FileHandler
+    formatter: basic
+    filename: /var/log/tarpit.log
+
+    #loggers:
+    #  tarpit:
+    #    level: DEBUG
+    #    handlers: [console,tarpit_log_file]
+
+root:
+  level: DEBUG
+  handlers: [console,tarpit_log_file]
